@@ -13,13 +13,12 @@
 #include <pangolin/geometry/geometry.h>
 #include <pangolin/display/pangolin_gl.h>
 #include <pangolin/geometry/glgeometry.h>
-
 #include "ORBextractor.h"
 #include "System.h"
 
 #include "RunModel/TextureShader.h"
 #include "Auxiliary.h"
-
+#include "Coordinates.h"
 
 
 /**
@@ -43,6 +42,8 @@
 class Simulator
 {
 public:
+
+    
     /**
      * Constructs a Simulator instance with specified parameters, and loads the ORBSLAM2 object.
      *
@@ -64,16 +65,29 @@ public:
      *
      * @param vocPath: A string representing the path to the ORBSLAM2 vocabulary file. Defaults to "../Vocabulary/ORBvoc.txt" if not specified.
      */
+     //added lat and longi parameters
     Simulator(std::string ORBSLAMConfigFile, std::string model_path, bool alignModelToTexture, std::string modelTextureNameToAlignTo,
               Eigen::Vector3f startingPoint, bool saveMap = false, std::string simulatorOutputDirPath = "../slamMaps/", bool loadMap = false,
               std::string mapLoadPath = "../slamMaps/example.bin",
               double movementFactor = 0.01,
               double speedFactor = 1.0,
-              std::string vocPath = "../Vocabulary/ORBvoc.txt");
+              std::string vocPath = "../Vocabulary/ORBvoc.txt",
+              double lat=0,double longi=0);
 
-    /**
-     *Starts the 3D model viewer (pangolin), and wait for the user or code signal to start sending the view to the ORBSLAM2 object
-     * */
+//returns valid frame
+    cv::Mat getFrame();
+    
+ //returns K camera matrix
+    Eigen::Matrix3d getK() ;
+
+ //setter and getter lat and long of coordinates parameter   
+    void setCoordinates(float lat, float longi);
+    
+    const Coordinates& getCoordinates();
+    
+  //adjusts camera yaw by value
+    void yawCamera(double value);
+      
     std::thread run();
     /**
      * sample the simulator state, this changes from false to true once the model is loaded
@@ -81,65 +95,19 @@ public:
      * */
     bool isReady() { return ready; }
 
-    bool startScanning() { return start; }
 
-    /**
-     * @brief Fetches the current location matrix from ORBSLAM2.
-     *
-     * @return A 4x4 location matrix where:
-     * - The first 3x3 sub-matrix represents the rotation matrix.
-     * - The last column represents the translation vector.
-     * - The y-axis indicates the height in reverse (i.e., negative values correspond to upward direction).
-     */
-    cv::Mat getCurrentLocationSlam();
-    /**
-     * @brief Fetches the current location matrix from Pangolin.
-     *
-     * @return A 4x4 location matrix where:
-     * - The first 3x3 sub-matrix represents the rotation matrix.
-     * - The last column represents the translation vector.
-     * - The y-axis indicates the height in reverse (i.e., negative values correspond to upward direction).
 
-     */
-    Eigen::Matrix4d getCurrentLocation();
-    /**
-     * @brief Retrieves the current map from ORBSLAM2.
-     *
-     * @return A vector of pointers to ORB_SLAM2::MapPoint objects.
-     */
-    std::vector<ORB_SLAM2::MapPoint *> getCurrentMap() { return SLAM->GetMap()->GetAllMapPoints(); };
-    /**
-     * @brief Executes a specific command for controlling the virtual robot in the simulation, NOTICE: the available commands are in the commandMap object .
-     *
-     * @param command A string specifying the command to be executed.
-     * @param intervalUsleep Optional parameter setting the sleep interval between command execution in microseconds. Default is 50000 microseconds.
-     * @param fps Optional parameter defining the frames per second rate for visualization. Default is 30.0.
-     * @param totalCommandTimeInSeconds Optional parameter setting the total duration for the command execution in seconds. Default is 1 second.
-     *
-     * This method enables the users to navigate the virtual robot in the simulation by executing specific commands.
-     */
-    void command(const std::string &command, int intervalUsleep = 50000,
-                 double fps = 30.0,
-                 int totalCommandTimeInSeconds = 1);
-    /**
-     * @brief kills the run thread
-     *
-     */
     void stop() { stopFlag = true; }
 
     /**
      * @brief enabling or disabling the ORBSLAM process.
      *
      */
-    void setTrack(bool value);
 
-    void setSpeed(double speed);
-
-    double getSpeed() const;
 
     void simulatorRunThread();
 
-    std::shared_ptr<ORB_SLAM2::System> GetSLAM() { return SLAM; }
+
 
     void drawPoint(cv::Point3d point, float size, Eigen::Vector3d color);
 
@@ -178,9 +146,9 @@ private:
     bool ready;
     bool start;
     bool initSlam;
-
+    float fScaleFactor;
     std::vector<std::pair<cv::Point3d, std::pair<float, Eigen::Vector3d>>> points;
-
+    Coordinates coordinates;
     Eigen::Vector3f startingPoint;
     bool saveMapSignal;
     bool track;
@@ -198,6 +166,7 @@ private:
     Eigen::Vector2i viewportDesiredSize;
     cv::Mat Tcw;
     cv::Mat currentImg;
+    cv::Mat bufferMat;
     std::mutex locationLock;
     std::mutex imgLock;
     int numberOfFeatures;

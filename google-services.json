@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "787797472116",
+    "firebase_url": "https://droneapp-701c4-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "droneapp-701c4",
+    "storage_bucket": "droneapp-701c4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:787797472116:android:8aa92a71cfb1fe63213221",
+        "android_client_info": {
+          "package_name": "com.example.fireapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTt8na_SrZszo95ID_kjCyDimHBS_Kuss"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

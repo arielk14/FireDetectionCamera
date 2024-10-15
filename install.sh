@@ -52,7 +52,7 @@ cmake ..
 sudo make -j3 install
 
 cd Thirdparty/
-git clone https://github.com/gabime/spdlog.git
+git clone hinclude_directories(${FIREBASE_SDK_PATH}/include) ensures that the header files from Firebase are included during compilation.ttps://github.com/gabime/spdlog.git
 cd spdlog
 mkdir build
 cd build
@@ -66,6 +66,17 @@ mkdir build
 cd build
 cmake ..
 sudo make -j3 install
+
+
+
+cd Thirdparty/
+git clone https://github.com/firebase/firebase-cpp-sdk.git firebase_cpp_sdk
+cd firebase_cpp_sdk
+mkdir build
+cd build
+cmake ..
+sudo make -j3 install
+
 
 cd "$cwd"
 mkdir build

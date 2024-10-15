@@ -41,25 +41,6 @@ Open generalSettings.json and change:
 
 
 ## II. Usage:
-### 1. Run simulator:
-- run `./examples/runSimulator` from the `build` folder in order to use the simulator within the model
-pay attention to the prints:
-you will need to press tab from the model viewer in order to start running the slam through the simulator with pre defined moves
-
-### 2. Navigate to point:
-- configure `target_point` in `generalSettings.json`
-- run `./examples/navigate_to_point` from the `build` folder in order to use the simulator to navigate to the target point*
-
-* This code meant for students to develop their implementation in `examples/navigate_to_point`
-
-### 3. Create orb slam map from webcam/drone:
-- run `./examples/mapping` from the `build` folder
-
-### 4. create Orb Slam map from video:
-- run `./examples/offline_orb_slam` from the `build` folder
-
-### 5. Add your room exit code:
-optional if you want to find room exit and navigate to the destanation:
-- open the roomExit file from src/RoomExit, include/RoomExit directories
-- change the implementation to your implementation of the room exit
-- You can check your code using runSimulator
+this project specificaly is an implementation of a fire detection model using the simulator
+- run the fire detection exacutable by going into directory  build
+- from this directory  run `/FireDetectionApp/fireDetection` 

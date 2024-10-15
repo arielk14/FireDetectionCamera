@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(simulatorMapping)
+project(fireDetection)
 set(CMAKE_CXX_STANDARD 17)
 IF (NOT CMAKE_BUILD_TYPE)
     SET(CMAKE_BUILD_TYPE Debug)
@@ -31,15 +31,22 @@ find_package(Threads REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system serialization)
 find_package(OpenCV REQUIRED)
 
+
+
 include_directories(
         ${OpenCV_INCLUDE_DIRS}
         ${EIGEN3_INCLUDE_DIR}
         ${PYTHON_INCLUDE_DIRS}
         ${Boost_INCLUDE_DIRS}
         ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/
-        ${PROJECT_SOURCE_DIR}/Thirdparty/
+        ${PROJECT_SOURCE_DIR}/Thirdparty
         ${PROJECT_SOURCE_DIR}/Thirdparty/slam/include/
+       
 )
+
+
+
+
 
 add_subdirectory(Thirdparty)
 
@@ -52,19 +59,40 @@ include_directories(
         ${PROJECT_SOURCE_DIR}/tools
         ${PROJECT_SOURCE_DIR}/tools/simulator/
         ${PROJECT_SOURCE_DIR}/include/
+        ${PROJECT_SOURCE_DIR}/libs/
+        ${PROJECT_SOURCE_DIR}/Thirdparty/firebase_cpp_sdk/include
 )
 
 add_library(Auxiliary STATIC
         src/Auxiliary.cpp
 )
+
+# Add libraries for Coordinates and FirebaseManager
+add_library(Coordinates STATIC src/Coordinates.cpp)
+add_library(FirebaseManager STATIC src/FirebaseManager.cpp)
+
+
 target_link_libraries(Auxiliary PUBLIC
         ${Pangolin_LIBRARIES}
 )
 
 add_library(simulator src/simulator/simulator.cpp)
-target_link_libraries(simulator ORB_SLAM2 Auxiliary)
 
-add_library(exitRoom src/RoomExit/RoomExit.cpp)
-target_link_libraries(exitRoom ORB_SLAM2 Auxiliary)
+# Linking ORB_SLAM2, Auxiliary, and Firebase
+target_link_libraries(simulator
+    ORB_SLAM2
+    Auxiliary
+)
+set(FIREBASE_SDK_PATH ${PROJECT_SOURCE_DIR}/Thirdparty/firebase_cpp_sdk/libs/linux/x86_64/cxx11)
+# Add Firebase libraries to the simulator target
+target_link_libraries(simulator
+    ${FIREBASE_SDK_PATH}/libfirebase_app.a
+    ${FIREBASE_SDK_PATH}/libfirebase_database.a
+    ${FIREBASE_SDK_PATH}/libfirebase_auth.a      # Add any additional Firebase libraries you need
+    ${FIREBASE_SDK_PATH}/libfirebase_firestore.a  # Add as needed
+)
 
-add_subdirectory(examples)
+
+add_subdirectory(FireDetectionApp)
+
+
