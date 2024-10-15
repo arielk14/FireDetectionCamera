@@ -6,10 +6,8 @@
 - At least 4 cores(If you're working from virtual machine please allocate at least 4 cores to the VM)
 - Prefered: 6 cores
 
-## Students Guide
-
-For comprehensive guide about the simulator: 
-https://drive.google.com/file/d/1HKZ_ecanpfv_IFJg1f98f6U__ivAlVef/view?usp=sharing
+## Refrence
+the simulator class and code is a project by rbdhaifa labs - `https://github.com/rbdlabhaifa/simulatorMapping `
 
 ## I. Installation:
 
